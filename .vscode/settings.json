@@ -1,6 +1,8 @@
 {
     "cSpell.words": [
+        "backprop",
         "cartpole",
+        "numpy",
         "qlearning"
     ]
 }
