@@ -102,7 +102,7 @@ as a control group.
 **2. Export to C**:
 
 ```bash
-python tools/export_weights_to_c.py cartpole/pc/weights/cartpole_dqn.pt cartpole_dqn_weights.h cartpole
+python tools/export_weights_to_c.py src/cartpole/pc/weights/cartpole_dqn.pt cartpole_dqn_weights.h cartpole
 ```
 
 Copy the header next to `cartpole_dqn_inference.ino` and `cartpole_dqn_demo.ino` (a copy for the

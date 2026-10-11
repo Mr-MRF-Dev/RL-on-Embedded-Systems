@@ -102,7 +102,7 @@ The unmodified script can also be run on a Raspberry Pi as a control group.
 **2. Export to C**:
 
 ```bash
-python tools/export_weights_to_c.py grid/pc/weights/grid_dqn_n30.pt grid_dqn_weights.h grid
+python tools/export_weights_to_c.py src/grid/pc/weights/grid_dqn_n30.pt grid_dqn_weights.h grid
 ```
 
 Copy the header next to `grid_dqn_inference.ino` and `grid_dqn_demo.ino` (a copy for `GRID_N` 30
