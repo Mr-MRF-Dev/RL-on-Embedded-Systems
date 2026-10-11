@@ -1,11 +1,13 @@
 # Cart-Pole Balancing
 
 Tabular Q-Learning on Cart-Pole with a discretized state space, used to study how the
-Q-table grows with the number of bins per dimension (curse of dimensionality).
-Two implementations of the same problem:
+Q-table grows with the number of bins per dimension (curse of dimensionality), plus a DQN
+variant that works on the continuous state. Two implementations of the same problem:
 
 - `pc/` – Python reference: environment + training + comparison with a random policy.
 - `arduino/` – the same physics and learning loop running **entirely on a micro-controller**.
+
+See [DQN](#dqn) for the neural-network variant.
 
 ## Problem
 
@@ -28,16 +30,21 @@ cartpole/
 ├── README.md
 ├── pc/
 │   ├── env.py                      # Cart-Pole environment
-│   └── train_qlearning.py          # training + evaluation
+│   ├── train_qlearning.py          # tabular training + evaluation
+│   ├── train_dqn.py                # DQN training (PyTorch), saves weights/
+│   └── weights/
+│       └── cartpole_dqn.pt
 └── arduino/
-    └── cartpole_qlearning/
-        └── cartpole_qlearning.ino  # on-device training + evaluation
+    ├── cartpole_qlearning/         # tabular, on-device training
+    ├── cartpole_dqn_inference/     # DQN forward pass only (+ weights header)
+    ├── cartpole_dqn_demo/          # live stream for tools/rl_serial_visualizer.py
+    └── cartpole_dqn_train/         # DQN trained on the microcontroller
 ```
 
-The sketch lives in a folder with the same name as the `.ino` file (required by the Arduino IDE).
-Constants in `env.py`, `train_qlearning.py` and `cartpole_qlearning.ino` are kept identical.
+Each sketch lives in a folder with the same name as its `.ino` file (required by the Arduino IDE).
+Constants in the Python files and the sketches are kept identical.
 
-## Run
+## Run (tabular Q-Learning)
 
 **PC** (Python 3, no dependencies):
 
@@ -76,7 +83,46 @@ bins the Q-table fits, but the discretization is too coarse to balance the pole 
 The extended budget is for checking whether a drop in solved rate at larger `NUM_BINS`
 comes from the fixed episode budget rather than from memory.
 
-## Reference result (PC, 6 bins, fixed seeds)
+## DQN
+
+DQN works on the raw continuous state, so no discretization is needed: the network
+(4 → 24 → 24 → 2, 770 parameters, 3080 bytes) is tiny and its size is independent of any bin count.
+
+**1. Train on the PC** (PyTorch; `pip install torch numpy`):
+
+```bash
+cd pc
+python train_dqn.py
+```
+
+The best checkpoint seen during training (short greedy probe every 25 episodes) is evaluated
+and saved to `weights/cartpole_dqn.pt`. The unmodified script can also be run on a Raspberry Pi
+as a control group.
+
+**2. Export to C**:
+
+```bash
+python tools/export_weights_to_c.py cartpole/pc/weights/cartpole_dqn.pt cartpole_dqn_weights.h cartpole
+```
+
+Copy the header next to `cartpole_dqn_inference.ino` and `cartpole_dqn_demo.ino` (a copy for the
+included weights is already there).
+
+**3. Run on the micro-controller** (115200 baud):
+
+| Sketch | Purpose | Boards |
+| --- | --- | --- |
+| `cartpole_dqn_inference` | greedy evaluation of the PC-trained network; prints mean return, solved rate, inference latency | all (weights live in flash) |
+| `cartpole_dqn_demo` | streams every step for `tools/rl_serial_visualizer.py` | all |
+| `cartpole_dqn_train` | full DQN training (replay buffer, target network, Adam, backprop) on the board; prints memory, timing, numerical-stability report and the trained weights as a C header | ESP32, STM32F4 (needs ~130 KB RAM; Uno and ESP8266 stop at compile time on purpose) |
+
+Its replay buffer holds 2750 transitions (PC: 20000) because the buffer is the largest RAM consumer.
+
+**Finding:** the last-episode weights are not necessarily the best ones. In the first PC run the
+training log (with 5% random actions) reached the maximum score repeatedly, but the final greedy
+evaluation only reached about 122, so the best checkpoint is selected instead.
+
+## Reference result (tabular, PC, 6 bins, fixed seeds)
 
 | Policy | Mean return | Solved rate (200 steps) |
 | --- | --- | --- |
