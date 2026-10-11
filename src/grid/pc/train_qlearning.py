@@ -85,13 +85,19 @@ def main():
 
     q_table = train(env, rng)
 
-    random_policy = evaluate(env, lambda s: rng.randrange(env.N_ACTIONS), N_EVAL_EPISODES)
+    random_policy = evaluate(
+        env, lambda s: rng.randrange(env.N_ACTIONS), N_EVAL_EPISODES
+    )
     trained = evaluate(env, lambda s: greedy_action(q_table, s), N_EVAL_EPISODES)
 
-    print(f"grid={GRID_N}x{GRID_N}  n_states={env.n_states}  "
-          f"optimal_return={env.optimal_return():.1f}\n")
-    print(f"{'policy':<20}{'mean_return':>14}{'std_return':>12}"
-          f"{'mean_steps':>12}{'goal_reach_rate':>18}")
+    print(
+        f"grid={GRID_N}x{GRID_N}  n_states={env.n_states}  "
+        f"optimal_return={env.optimal_return():.1f}\n"
+    )
+    print(
+        f"{'policy':<20}{'mean_return':>14}{'std_return':>12}"
+        f"{'mean_steps':>12}{'goal_reach_rate':>18}"
+    )
     for name, (ret, std_ret, steps, rate) in [
         ("Random", random_policy),
         ("Trained Tabular Q", trained),

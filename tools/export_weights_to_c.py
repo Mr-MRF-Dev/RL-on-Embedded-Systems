@@ -32,13 +32,16 @@ def load_layers(pt_path):
     layers = []
     idx = 0
     while f"net.{idx}.weight" in state:
-        layers.append((state[f"net.{idx}.weight"].numpy(),
-                       state[f"net.{idx}.bias"].numpy()))
+        layers.append(
+            (state[f"net.{idx}.weight"].numpy(), state[f"net.{idx}.bias"].numpy())
+        )
         idx += 2
 
     if not layers:
-        raise RuntimeError(f"no net.N.weight keys found in {pt_path}; "
-                           "is this a QNetwork state_dict from train_dqn.py?")
+        raise RuntimeError(
+            f"no net.N.weight keys found in {pt_path}; "
+            "is this a QNetwork state_dict from train_dqn.py?"
+        )
     return layers
 
 
@@ -53,7 +56,9 @@ def write_header(layers, header_path, source_path, name):
             out_dim, in_dim = W.shape
             f.write(f"const int {name}_layer{i}_in = {in_dim};\n")
             f.write(f"const int {name}_layer{i}_out = {out_dim};\n")
-            f.write(f"const float {name}_layer{i}_W[{out_dim * in_dim}] PROGMEM_ATTR = {{\n")
+            f.write(
+                f"const float {name}_layer{i}_W[{out_dim * in_dim}] PROGMEM_ATTR = {{\n"
+            )
             f.write(",".join(f"{v:.8f}f" for v in W.flatten()))
             f.write("\n};\n")
             f.write(f"const float {name}_layer{i}_b[{out_dim}] PROGMEM_ATTR = {{\n")
@@ -66,8 +71,10 @@ def export(pt_path, header_path, name):
     write_header(layers, header_path, pt_path, name)
 
     total_params = sum(W.size + b.size for W, b in layers)
-    print(f"wrote {header_path}: {len(layers)} layers, {total_params} parameters "
-          f"(~{total_params * 4} bytes as float32)")
+    print(
+        f"wrote {header_path}: {len(layers)} layers, {total_params} parameters "
+        f"(~{total_params * 4} bytes as float32)"
+    )
     for i, (W, _) in enumerate(layers):
         activation = "ReLU" if i < len(layers) - 1 else "none (raw Q-values)"
         print(f"  layer {i}: {W.shape[1]} -> {W.shape[0]}  ({activation})")

@@ -139,7 +139,9 @@ def probe_policy(env, policy_net, n_episodes):
         state = get_continuous_state(env)
         total = 0.0
         while True:
-            _, reward, terminated, truncated, _ = env.step(greedy_action(policy_net, state))
+            _, reward, terminated, truncated, _ = env.step(
+                greedy_action(policy_net, state)
+            )
             state = get_continuous_state(env)
             total += reward
             if terminated or truncated:
@@ -211,16 +213,20 @@ def train(env):
         returns_log.append(total_reward)
         if (episode + 1) % LOG_INTERVAL == 0:
             recent = returns_log[-LOG_INTERVAL:]
-            print(f"episode {episode + 1:>5}  "
-                  f"avg_return(last {LOG_INTERVAL})={sum(recent) / len(recent):7.2f}  eps={eps:.3f}")
+            print(
+                f"episode {episode + 1:>5}  "
+                f"avg_return(last {LOG_INTERVAL})={sum(recent) / len(recent):7.2f}  eps={eps:.3f}"
+            )
 
         if (episode + 1) % PROBE_INTERVAL == 0:
             score = probe_policy(env, policy_net, PROBE_EPISODES)
             if score > best_score:
                 best_score = score
                 best_state = copy.deepcopy(policy_net.state_dict())
-                print(f"  -> new best checkpoint at episode {episode + 1}: "
-                      f"greedy probe avg_return={score:.2f}")
+                print(
+                    f"  -> new best checkpoint at episode {episode + 1}: "
+                    f"greedy probe avg_return={score:.2f}"
+                )
 
     training_seconds = time.time() - start
     policy_net.load_state_dict(best_state)
@@ -259,8 +265,13 @@ def evaluate(env, policy_net):
     mean_ret = sum(returns) / len(returns)
     std_ret = (sum((x - mean_ret) ** 2 for x in returns) / len(returns)) ** 0.5
     mean_steps = sum(steps) / len(steps)
-    return (mean_ret, std_ret, mean_steps,
-            goal_reached / N_EVAL_EPISODES, inference_time / inference_count * 1e6)
+    return (
+        mean_ret,
+        std_ret,
+        mean_steps,
+        goal_reached / N_EVAL_EPISODES,
+        inference_time / inference_count * 1e6,
+    )
 
 
 def main():
@@ -269,21 +280,29 @@ def main():
 
     policy_net, best_score, training_seconds = train(env)
 
-    print(f"\ntotal training wall-clock time: {training_seconds:.1f} s "
-          f"({training_seconds / 60:.2f} min) over {N_EPISODES} episodes")
-    print(f"best checkpoint: avg_return={best_score:.2f} "
-          f"(greedy probe over {PROBE_EPISODES} episodes)")
+    print(
+        f"\ntotal training wall-clock time: {training_seconds:.1f} s "
+        f"({training_seconds / 60:.2f} min) over {N_EPISODES} episodes"
+    )
+    print(
+        f"best checkpoint: avg_return={best_score:.2f} "
+        f"(greedy probe over {PROBE_EPISODES} episodes)"
+    )
 
     mean_ret, std_ret, mean_steps, goal_rate, inference_us = evaluate(env, policy_net)
     print(f"\nGRID_N={GRID_N}  optimal_return={env.optimal_return():.1f}")
     print(f"=== final evaluation ({N_EVAL_EPISODES} greedy episodes) ===")
-    print(f"mean_return={mean_ret:.2f}  std_return={std_ret:.2f}  "
-          f"mean_steps={mean_steps:.2f}  goal_reach_rate={goal_rate:.2%}")
+    print(
+        f"mean_return={mean_ret:.2f}  std_return={std_ret:.2f}  "
+        f"mean_steps={mean_steps:.2f}  goal_reach_rate={goal_rate:.2%}"
+    )
     print(f"avg inference latency per step: {inference_us:.2f} us")
 
     n_params = sum(p.numel() for p in policy_net.parameters())
-    print(f"policy network parameter count: {n_params}  "
-          f"(~{n_params * 4} bytes as float32, independent of GRID_N)")
+    print(
+        f"policy network parameter count: {n_params}  "
+        f"(~{n_params * 4} bytes as float32, independent of GRID_N)"
+    )
 
     WEIGHTS_PATH.parent.mkdir(exist_ok=True)
     torch.save(policy_net.state_dict(), WEIGHTS_PATH)

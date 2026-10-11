@@ -21,9 +21,9 @@ from statistics import mean, pstdev
 from env import DPMEnv
 
 # Shield
-SHIELD_THRESHOLD = 15.0     # hard tier: force Sleep at or below this battery level
-WARNING_THRESHOLD = 30.0    # warning tier: reward penalty below this level
-WARN_WEIGHT = 4.0           # max warning penalty (reached at battery = 0)
+SHIELD_THRESHOLD = 15.0  # hard tier: force Sleep at or below this battery level
+WARNING_THRESHOLD = 30.0  # warning tier: reward penalty below this level
+WARN_WEIGHT = 4.0  # max warning penalty (reached at battery = 0)
 INTERVENTION_PENALTY = 2.0  # flat penalty per override (variant 3 only)
 SLEEP_ACTION = 2
 
@@ -71,8 +71,8 @@ def greedy_action(q_table, state):
 def train(env, rng, use_shield, intervention_penalty=False, warning_tier=False):
     """Return (q_table, depletion_events, shield_interventions)."""
     q_table = [[0.0] * DPMEnv.N_ACTIONS for _ in range(DPMEnv.N_STATES)]
-    depletion_events = 0       # training episodes that ended with an empty battery
-    shield_interventions = 0   # steps where the shield overrode the proposed action
+    depletion_events = 0  # training episodes that ended with an empty battery
+    shield_interventions = 0  # steps where the shield overrode the proposed action
 
     for episode in range(N_EPISODES):
         state = env.reset()
@@ -139,10 +139,14 @@ def run(label, seed, **variant):
     print(f"--- {label} (seed={seed}) ---")
     print(f"training depletion events (out of {N_EPISODES} episodes): {depletions}")
     if variant["use_shield"]:
-        print(f"shield interventions (steps where shield overrode the proposed action): "
-              f"{interventions}")
-    print(f"eval: mean_return={ret:.2f}  std_return={std_ret:.2f}  "
-          f"mean_survival={surv:.2f}  std_survival={std_surv:.2f}")
+        print(
+            f"shield interventions (steps where shield overrode the proposed action): "
+            f"{interventions}"
+        )
+    print(
+        f"eval: mean_return={ret:.2f}  std_return={std_ret:.2f}  "
+        f"mean_survival={surv:.2f}  std_survival={std_surv:.2f}"
+    )
     print()
 
 

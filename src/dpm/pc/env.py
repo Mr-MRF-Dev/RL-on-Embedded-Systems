@@ -8,8 +8,8 @@ import random
 
 
 class DPMEnv:
-    N_BATTERY_BINS = 5   # 0 = critical ... 4 = full
-    N_IDLE_BINS = 4      # steps since last request, capped at 3
+    N_BATTERY_BINS = 5  # 0 = critical ... 4 = full
+    N_IDLE_BINS = 4  # steps since last request, capped at 3
     N_STATES = N_BATTERY_BINS * N_IDLE_BINS
     N_ACTIONS = 3
 
@@ -24,8 +24,8 @@ class DPMEnv:
     # Episode and reward
     MAX_STEPS = 200
     REWARD_SCALE = 3.0
-    SURVIVAL_BONUS = 1.5       # reward for every step the device stays alive
-    TERMINAL_PENALTY = -50.0   # applied when the battery is depleted
+    SURVIVAL_BONUS = 1.5  # reward for every step the device stays alive
+    TERMINAL_PENALTY = -50.0  # applied when the battery is depleted
 
     def __init__(self, seed=None):
         self.rng = random.Random(seed)

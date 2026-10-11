@@ -89,8 +89,10 @@ def evaluate(env, policy, n_episodes):
 
 def print_results(rows):
     print("--- evaluation (greedy) ---")
-    print(f"{'policy':<22}{'avg_return':>12}{'std_return':>12}"
-          f"{'avg_survival':>14}{'std_survival':>14}")
+    print(
+        f"{'policy':<22}{'avg_return':>12}{'std_return':>12}"
+        f"{'avg_survival':>14}{'std_survival':>14}"
+    )
     for name, (ret, std_ret, surv, std_surv) in rows:
         print(f"{name:<22}{ret:>12.2f}{std_ret:>12.2f}{surv:>14.1f}{std_surv:>14.2f}")
 
@@ -98,8 +100,10 @@ def print_results(rows):
 def print_policy(q_table):
     print("\nlearned greedy policy (battery_bin, idle_bin) -> action:")
     for b in range(DPMEnv.N_BATTERY_BINS):
-        row = [ACTION_LETTER[greedy_action(q_table, b * DPMEnv.N_IDLE_BINS + i)]
-               for i in range(DPMEnv.N_IDLE_BINS)]
+        row = [
+            ACTION_LETTER[greedy_action(q_table, b * DPMEnv.N_IDLE_BINS + i)]
+            for i in range(DPMEnv.N_IDLE_BINS)
+        ]
         print(f"  battery_bin={b}: {row}")
 
 
@@ -110,8 +114,10 @@ def main():
     q_table, returns, survivals = train(env, rng)
 
     print("--- last 100 training episodes ---")
-    print(f"avg return: {mean(returns[-100:]):.2f}   "
-          f"avg survival steps: {mean(survivals[-100:]):.1f}\n")
+    print(
+        f"avg return: {mean(returns[-100:]):.2f}   "
+        f"avg survival steps: {mean(survivals[-100:]):.1f}\n"
+    )
 
     always_active = evaluate(env, lambda s: 0, N_EVAL_EPISODES)
     threshold = evaluate(
@@ -119,13 +125,17 @@ def main():
         lambda s: 0 if (s // DPMEnv.N_IDLE_BINS) <= 1 else 2,
         N_EVAL_EPISODES,
     )
-    trained = evaluate(env, lambda s: greedy_action(q_table, s), N_EVAL_EPISODES_TRAINED)
+    trained = evaluate(
+        env, lambda s: greedy_action(q_table, s), N_EVAL_EPISODES_TRAINED
+    )
 
-    print_results([
-        ("Always-Active", always_active),
-        ("Threshold baseline", threshold),
-        ("Trained Tabular Q", trained),
-    ])
+    print_results(
+        [
+            ("Always-Active", always_active),
+            ("Threshold baseline", threshold),
+            ("Trained Tabular Q", trained),
+        ]
+    )
     print_policy(q_table)
 
 

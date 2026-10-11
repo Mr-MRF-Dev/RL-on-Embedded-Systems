@@ -20,13 +20,13 @@ class CartPoleEnv:
     MASSCART = 1.0
     MASSPOLE = 0.1
     TOTAL_MASS = MASSCART + MASSPOLE
-    LENGTH = 0.5                       # half the pole length
+    LENGTH = 0.5  # half the pole length
     POLEMASS_LENGTH = MASSPOLE * LENGTH
     FORCE_MAG = 10.0
-    TAU = 0.02                         # seconds per step
+    TAU = 0.02  # seconds per step
 
     # Termination
-    THETA_THRESHOLD = 12 * 2 * math.pi / 360   # 12 degrees in rad
+    THETA_THRESHOLD = 12 * 2 * math.pi / 360  # 12 degrees in rad
     X_THRESHOLD = 2.4
     MAX_STEPS = 200
 
@@ -41,7 +41,7 @@ class CartPoleEnv:
 
     def __init__(self, num_bins=None, seed=None):
         self.num_bins = num_bins if num_bins is not None else self.DEFAULT_NUM_BINS
-        self.n_states = self.num_bins ** 4
+        self.n_states = self.num_bins**4
         self.rng = random.Random(seed)
         self.reset()
 
@@ -61,9 +61,11 @@ class CartPoleEnv:
         costheta = math.cos(self.theta)
         sintheta = math.sin(self.theta)
 
-        temp = (force + self.POLEMASS_LENGTH * self.theta_dot ** 2 * sintheta) / self.TOTAL_MASS
+        temp = (
+            force + self.POLEMASS_LENGTH * self.theta_dot**2 * sintheta
+        ) / self.TOTAL_MASS
         thetaacc = (self.GRAVITY * sintheta - costheta * temp) / (
-            self.LENGTH * (4.0 / 3.0 - self.MASSPOLE * costheta ** 2 / self.TOTAL_MASS)
+            self.LENGTH * (4.0 / 3.0 - self.MASSPOLE * costheta**2 / self.TOTAL_MASS)
         )
         xacc = temp - self.POLEMASS_LENGTH * thetaacc * costheta / self.TOTAL_MASS
 

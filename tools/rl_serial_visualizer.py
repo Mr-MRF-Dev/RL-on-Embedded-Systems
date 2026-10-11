@@ -26,7 +26,7 @@ BAUD_RATE = 115200
 
 # Defaults used until a CP_INFO / GRID_INFO line arrives from the board
 DEFAULT_X_THRESHOLD = 2.4
-DEFAULT_THETA_THRESHOLD = 0.2094   # 12 degrees in rad
+DEFAULT_THETA_THRESHOLD = 0.2094  # 12 degrees in rad
 DEFAULT_CP_MAX_STEPS = 200
 DEFAULT_GRID_N = 30
 DEFAULT_GRID_MAX_STEPS = 180
@@ -35,9 +35,13 @@ CARTPOLE_ACTIONS = {0: "Push Left", 1: "Push Right"}
 GRID_ACTIONS = {0: "Up", 1: "Down", 2: "Left", 3: "Right"}
 
 STAT_LABELS = [
-    ("episode", "Episode"), ("step", "Step"), ("action", "Action"),
-    ("reward", "Reward (step)"), ("total_reward", "Cumulative reward"),
-    ("avg_return", "Avg return (last 10 ep)"), ("status", "Status"),
+    ("episode", "Episode"),
+    ("step", "Step"),
+    ("action", "Action"),
+    ("reward", "Reward (step)"),
+    ("total_reward", "Cumulative reward"),
+    ("avg_return", "Avg return (last 10 ep)"),
+    ("status", "Status"),
 ]
 
 
@@ -115,8 +119,9 @@ class CartPoleView(ttk.Frame):
         self.max_steps = DEFAULT_CP_MAX_STEPS
         self.recent_returns = []
 
-        self.canvas = tk.Canvas(self, width=760, height=340, background="#101418",
-                                highlightthickness=0)
+        self.canvas = tk.Canvas(
+            self, width=760, height=340, background="#101418", highlightthickness=0
+        )
         self.canvas.pack(padx=10, pady=10)
         self.vars = build_stats_row(self)
         self._draw(0.0, 0.0)
@@ -126,8 +131,20 @@ class CartPoleView(ttk.Frame):
         self.theta_threshold = theta_threshold
         self.max_steps = max_steps
 
-    def update_state(self, episode, step, x, x_dot, theta, theta_dot,
-                     action, reward, total_reward, done, result):
+    def update_state(
+        self,
+        episode,
+        step,
+        x,
+        x_dot,
+        theta,
+        theta_dot,
+        action,
+        reward,
+        total_reward,
+        done,
+        result,
+    ):
         self.vars["episode"].set(episode)
         self.vars["step"].set(step)
         self.vars["action"].set(CARTPOLE_ACTIONS.get(action, str(action)))
@@ -136,11 +153,14 @@ class CartPoleView(ttk.Frame):
 
         if done:
             self.vars["status"].set(
-                "SOLVED (balanced full episode)" if result == "SOLVED"
+                "SOLVED (balanced full episode)"
+                if result == "SOLVED"
                 else "FAILED (fell / out of bounds)"
             )
             self.recent_returns = (self.recent_returns + [total_reward])[-10:]
-            self.vars["avg_return"].set(f"{sum(self.recent_returns) / len(self.recent_returns):.1f}")
+            self.vars["avg_return"].set(
+                f"{sum(self.recent_returns) / len(self.recent_returns):.1f}"
+            )
         else:
             self.vars["status"].set("running")
 
@@ -153,8 +173,13 @@ class CartPoleView(ttk.Frame):
         track_y = h - 70
         margin = 40
 
-        c.create_text(w / 2, 22, text="Cart-Pole -- on-device DQN inference",
-                      fill="#c8ccd0", font=("Segoe UI", 11, "bold"))
+        c.create_text(
+            w / 2,
+            22,
+            text="Cart-Pole -- on-device DQN inference",
+            fill="#c8ccd0",
+            font=("Segoe UI", 11, "bold"),
+        )
 
         c.create_line(margin, track_y, w - margin, track_y, fill="#3a4048", width=3)
         for frac in (-1.0, -0.5, 0.0, 0.5, 1.0):
@@ -168,18 +193,37 @@ class CartPoleView(ttk.Frame):
         pole_len = 110
         tip_x = cart_x + pole_len * math.sin(theta)
         tip_y = (track_y - cart_h / 2) - pole_len * math.cos(theta)
-        c.create_line(cart_x, track_y - cart_h / 2, tip_x, tip_y,
-                      fill="#e0a030", width=6, capstyle="round")
-        c.create_oval(tip_x - 6, tip_y - 6, tip_x + 6, tip_y + 6,
-                      fill="#e0a030", outline="")
+        c.create_line(
+            cart_x,
+            track_y - cart_h / 2,
+            tip_x,
+            tip_y,
+            fill="#e0a030",
+            width=6,
+            capstyle="round",
+        )
+        c.create_oval(
+            tip_x - 6, tip_y - 6, tip_x + 6, tip_y + 6, fill="#e0a030", outline=""
+        )
 
-        c.create_rectangle(cart_x - cart_w / 2, track_y - cart_h,
-                           cart_x + cart_w / 2, track_y,
-                           fill="#3d7ea6", outline="#7fc7ff", width=2)
+        c.create_rectangle(
+            cart_x - cart_w / 2,
+            track_y - cart_h,
+            cart_x + cart_w / 2,
+            track_y,
+            fill="#3d7ea6",
+            outline="#7fc7ff",
+            width=2,
+        )
         for wheel_dx in (-cart_w / 3, cart_w / 3):
-            c.create_oval(cart_x + wheel_dx - 8, track_y - 4,
-                          cart_x + wheel_dx + 8, track_y + 12,
-                          fill="#20242a", outline="#555")
+            c.create_oval(
+                cart_x + wheel_dx - 8,
+                track_y - 4,
+                cart_x + wheel_dx + 8,
+                track_y + 12,
+                fill="#20242a",
+                outline="#555",
+            )
 
 
 class GridView(ttk.Frame):
@@ -192,8 +236,9 @@ class GridView(ttk.Frame):
         self.recent_returns = []
         self.trail = []
 
-        self.canvas = tk.Canvas(self, width=520, height=520, background="#101418",
-                                highlightthickness=0)
+        self.canvas = tk.Canvas(
+            self, width=520, height=520, background="#101418", highlightthickness=0
+        )
         self.canvas.pack(padx=10, pady=10)
         self.vars = build_stats_row(self)
         self._draw(0, 0)
@@ -203,8 +248,9 @@ class GridView(ttk.Frame):
         self.max_steps = max_steps
         self.trail = []
 
-    def update_state(self, episode, step, row, col, action, reward,
-                     total_reward, done, result):
+    def update_state(
+        self, episode, step, row, col, action, reward, total_reward, done, result
+    ):
         self.vars["episode"].set(episode)
         self.vars["step"].set(step)
         self.vars["action"].set(GRID_ACTIONS.get(action, str(action)))
@@ -220,7 +266,9 @@ class GridView(ttk.Frame):
                 "GOAL reached" if result == "GOAL" else "TIMEOUT (goal not reached)"
             )
             self.recent_returns = (self.recent_returns + [total_reward])[-10:]
-            self.vars["avg_return"].set(f"{sum(self.recent_returns) / len(self.recent_returns):.1f}")
+            self.vars["avg_return"].set(
+                f"{sum(self.recent_returns) / len(self.recent_returns):.1f}"
+            )
         else:
             self.vars["status"].set("running")
 
@@ -242,20 +290,31 @@ class GridView(ttk.Frame):
         gx0 = margin + (n - 1) * cell
         gy0 = margin + (n - 1) * cell
         c.create_rectangle(gx0, gy0, gx0 + cell, gy0 + cell, fill="#2f6b3a", outline="")
-        c.create_text(gx0 + cell / 2, gy0 + cell / 2, text="G", fill="#c8ffd0",
-                      font=("Segoe UI", max(8, int(cell / 2)), "bold"))
+        c.create_text(
+            gx0 + cell / 2,
+            gy0 + cell / 2,
+            text="G",
+            fill="#c8ffd0",
+            font=("Segoe UI", max(8, int(cell / 2)), "bold"),
+        )
 
         if len(self.trail) > 1:
             points = []
-            for (r, cix) in self.trail:
+            for r, cix in self.trail:
                 points.extend([margin + (cix + 0.5) * cell, margin + (r + 0.5) * cell])
             c.create_line(*points, fill="#3d7ea6", width=max(2, int(cell / 8)))
 
         ax = margin + (col + 0.5) * cell
         ay = margin + (row + 0.5) * cell
         radius = max(4, cell * 0.32)
-        c.create_oval(ax - radius, ay - radius, ax + radius, ay + radius,
-                      fill="#e0a030", outline="")
+        c.create_oval(
+            ax - radius,
+            ay - radius,
+            ax + radius,
+            ay + radius,
+            fill="#e0a030",
+            outline="",
+        )
 
 
 class App(tk.Tk):
@@ -297,8 +356,9 @@ class App(tk.Tk):
 
         ttk.Label(bar, text="Port:").pack(side="left")
         self.port_var = tk.StringVar()
-        self.port_combo = ttk.Combobox(bar, textvariable=self.port_var, width=18,
-                                       state="readonly")
+        self.port_combo = ttk.Combobox(
+            bar, textvariable=self.port_var, width=18, state="readonly"
+        )
         self.port_combo.pack(side="left", padx=(4, 4))
         self._refresh_ports()
 
@@ -308,9 +368,11 @@ class App(tk.Tk):
 
         ttk.Button(bar, text="Pause", command=lambda: self._send("p")).pack(side="left")
         ttk.Button(bar, text="Resume", command=lambda: self._send("g")).pack(
-            side="left", padx=(4, 4))
+            side="left", padx=(4, 4)
+        )
         ttk.Button(bar, text="Next Episode", command=lambda: self._send("n")).pack(
-            side="left")
+            side="left"
+        )
 
         self.conn_status_var = tk.StringVar(value="Not connected")
         ttk.Label(bar, textvariable=self.conn_status_var).pack(side="right")
@@ -327,7 +389,9 @@ class App(tk.Tk):
             if not port:
                 self.conn_status_var.set("Select a port first")
                 return
-            self.reader = SerialReader(port, BAUD_RATE, self.line_queue, self.status_queue)
+            self.reader = SerialReader(
+                port, BAUD_RATE, self.line_queue, self.status_queue
+            )
             self.reader.start()
             self.connect_btn.config(text="Disconnect")
         else:
@@ -350,9 +414,10 @@ class App(tk.Tk):
         self._placeholder = ttk.Label(
             self.container,
             text="Connect to the board and flash cartpole_dqn_demo.ino\n"
-                 "or grid_dqn_demo.ino -- the matching view appears automatically\n"
-                 "once data starts arriving.",
-            justify="center", font=("Segoe UI", 12),
+            "or grid_dqn_demo.ino -- the matching view appears automatically\n"
+            "once data starts arriving.",
+            justify="center",
+            font=("Segoe UI", 12),
         )
         self._placeholder.pack(expand=True)
 
@@ -390,7 +455,9 @@ class App(tk.Tk):
 
         try:
             if tag == "CP_INFO" and len(parts) >= 4:
-                self.views["cartpole"].set_info(float(parts[1]), float(parts[2]), int(parts[3]))
+                self.views["cartpole"].set_info(
+                    float(parts[1]), float(parts[2]), int(parts[3])
+                )
 
             elif tag == "GRID_INFO" and len(parts) >= 3:
                 self.views["grid"].set_info(int(parts[1]), int(parts[2]))
@@ -399,11 +466,16 @@ class App(tk.Tk):
                 if self.active_view != "cartpole":
                     self._show_view("cartpole")
                 self.views["cartpole"].update_state(
-                    episode=int(parts[1]), step=int(parts[2]),
-                    x=float(parts[3]), x_dot=float(parts[4]),
-                    theta=float(parts[5]), theta_dot=float(parts[6]),
-                    action=int(parts[7]), reward=float(parts[8]),
-                    total_reward=float(parts[9]), done=bool(int(parts[10])),
+                    episode=int(parts[1]),
+                    step=int(parts[2]),
+                    x=float(parts[3]),
+                    x_dot=float(parts[4]),
+                    theta=float(parts[5]),
+                    theta_dot=float(parts[6]),
+                    action=int(parts[7]),
+                    reward=float(parts[8]),
+                    total_reward=float(parts[9]),
+                    done=bool(int(parts[10])),
                     result=parts[11] if len(parts) > 11 else "",
                 )
 
@@ -411,10 +483,14 @@ class App(tk.Tk):
                 if self.active_view != "grid":
                     self._show_view("grid")
                 self.views["grid"].update_state(
-                    episode=int(parts[1]), step=int(parts[2]),
-                    row=int(parts[3]), col=int(parts[4]),
-                    action=int(parts[5]), reward=float(parts[6]),
-                    total_reward=float(parts[7]), done=bool(int(parts[8])),
+                    episode=int(parts[1]),
+                    step=int(parts[2]),
+                    row=int(parts[3]),
+                    col=int(parts[4]),
+                    action=int(parts[5]),
+                    reward=float(parts[6]),
+                    total_reward=float(parts[7]),
+                    done=bool(int(parts[8])),
                     result=parts[9] if len(parts) > 9 else "",
                 )
             # other lines (boot banners, debug text) are ignored

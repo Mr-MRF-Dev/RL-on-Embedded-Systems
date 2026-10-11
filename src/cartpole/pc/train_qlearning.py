@@ -66,9 +66,11 @@ def train(env, rng):
         returns.append(total_reward)
 
         if (episode + 1) % LOG_INTERVAL == 0:
-            print(f"episode {episode + 1:>6}  "
-                  f"avg_return(last {LOG_INTERVAL})={mean(returns[-LOG_INTERVAL:]):.1f}  "
-                  f"eps={eps:.3f}")
+            print(
+                f"episode {episode + 1:>6}  "
+                f"avg_return(last {LOG_INTERVAL})={mean(returns[-LOG_INTERVAL:]):.1f}  "
+                f"eps={eps:.3f}"
+            )
 
     return q_table
 
@@ -95,12 +97,16 @@ def main():
 
     q_table = train(env, rng)
 
-    random_policy = evaluate(env, lambda s: rng.randrange(env.N_ACTIONS), N_EVAL_EPISODES)
+    random_policy = evaluate(
+        env, lambda s: rng.randrange(env.N_ACTIONS), N_EVAL_EPISODES
+    )
     trained = evaluate(env, lambda s: greedy_action(q_table, s), N_EVAL_EPISODES)
 
     print()
     print(f"NUM_BINS={NUM_BINS}  n_states={env.n_states}  MAX_STEPS={env.MAX_STEPS}")
-    print(f"{'policy':<20}{'mean_return':>14}{'std_return':>12}{'solved_rate(=MAX_STEPS)':>26}")
+    print(
+        f"{'policy':<20}{'mean_return':>14}{'std_return':>12}{'solved_rate(=MAX_STEPS)':>26}"
+    )
     for name, (ret, std_ret, solved) in [
         ("Random", random_policy),
         ("Trained Tabular Q", trained),
