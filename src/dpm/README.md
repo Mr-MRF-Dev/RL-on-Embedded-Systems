@@ -6,6 +6,8 @@ Two implementations of the same problem:
 - `pc/` – Python reference: environment + training + baseline comparison.
 - `arduino/` – the same environment and learning loop running **entirely on a micro-controller**.
 
+A rule-based **Safety Shield** variant is included for both (see [Safety Shield](#safety-shield)).
+
 ## Problem
 
 | | |
@@ -25,15 +27,18 @@ The battery is simulated; no real energy is measured.
 dpm/
 ├── README.md
 ├── pc/
-│   ├── env.py                  # DPM environment
-│   └── train_qlearning.py      # training + evaluation vs. baselines
+│   ├── env.py                          # DPM environment
+│   ├── train_qlearning.py              # training + evaluation vs. baselines
+│   └── train_qlearning_shield.py       # shielded vs. unshielded comparison
 └── arduino/
-    └── dpm_qlearning/
-        └── dpm_qlearning.ino   # on-device training + evaluation
+    ├── dpm_qlearning/
+    │   └── dpm_qlearning.ino           # on-device training + evaluation
+    └── dpm_qlearning_shield/
+        └── dpm_qlearning_shield.ino    # same, with the Safety Shield
 ```
 
-The sketch lives in a folder with the same name as the `.ino` file (required by the Arduino IDE).
-Constants in `env.py`, `train_qlearning.py` and `dpm_qlearning.ino` are kept identical.
+Each sketch lives in a folder with the same name as its `.ino` file (required by the Arduino IDE).
+Constants in the Python files and the sketches are kept identical.
 
 ## Run
 
@@ -46,7 +51,7 @@ python train_qlearning.py
 
 Trains for 6000 episodes, then evaluates Always-Active, a Threshold baseline, and the trained agent.
 
-**MicroController:**
+**Microcontroller:**
 
 1. Open `arduino/dpm_qlearning/dpm_qlearning.ino` in the Arduino IDE.
 2. Select the board (Uno/Nano, ESP8266, ESP32, STM32 via STM32duino) and upload.
@@ -55,6 +60,31 @@ Trains for 6000 episodes, then evaluates Always-Active, a Threshold baseline, an
 Serial output (CSV): Q-table size in bytes, a training log every 50 episodes
 (`episode,return,survival_steps,avg_step_us,epsilon`), a greedy evaluation summary
 (mean/std over 100 episodes), and the learned policy per state.
+
+## Safety Shield
+
+A small deterministic layer between the agent and the environment, active during both
+training and evaluation. Q-updates use the action that was actually executed.
+
+| Tier | Condition | Effect |
+| --- | --- | --- |
+| Hard | battery ≤ 15 | proposed action is overridden with Sleep |
+| Warning | battery < 30 | no override; reward penalty `4 · (30 − battery) / 30` |
+
+A hard tier alone made results worse: the agent learns to spend battery early and rely on
+being forced into Sleep, which in the Python experiments cut mean survival to about 124–128
+of 200 steps (seeds 0–2) versus 150–200 without a shield. The warning tier adds a learning
+signal before the cutoff. Adding a flat penalty only at the moment of override did not help.
+
+Run the comparison (4 variants × 3 seeds):
+
+```bash
+cd pc
+python train_qlearning_shield.py
+```
+
+The Arduino sketch `dpm_qlearning_shield` uses the two-tier design and additionally logs
+the number of shield interventions and depletion episodes during training.
 
 ## Reference result (PC, fixed seeds)
 
