@@ -1,0 +1,6 @@
+torch
+numpy
+pyserial
+
+# tkinter (used by tools/rl_serial_visualizer.py) ships with Python;
+# on Debian/Ubuntu install it with: sudo apt install python3-tk
