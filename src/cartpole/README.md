@@ -11,14 +11,14 @@ See [DQN](#dqn) for the neural-network variant.
 
 ## Problem
 
-| | |
-| --- | --- |
-| **Physics** | standard CartPole-v1 (Barto, Sutton & Anderson) |
-| **State** | 4-D continuous: cart position, cart velocity, pole angle, pole angular velocity |
-| **Discretization** | `NUM_BINS` uniform bins per dimension → `NUM_BINS⁴` states |
-| **Actions** | 0 = push left, 1 = push right (force ±10 N) |
-| **Reward** | +1 per step |
-| **Termination** | pole beyond ±12°, cart beyond ±2.4 m, or 200 steps |
+|                    |                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------- |
+| **Physics**        | standard CartPole-v1 (Barto, Sutton & Anderson)                                 |
+| **State**          | 4-D continuous: cart position, cart velocity, pole angle, pole angular velocity |
+| **Discretization** | `NUM_BINS` uniform bins per dimension → `NUM_BINS⁴` states                      |
+| **Actions**        | 0 = push left, 1 = push right (force ±10 N)                                     |
+| **Reward**         | +1 per step                                                                     |
+| **Termination**    | pole beyond ±12°, cart beyond ±2.4 m, or 200 steps                              |
 
 The Q-table holds `NUM_BINS⁴ × 2` floats, i.e. **8 · NUM_BINS⁴ bytes**
 (`NUM_BINS = 3` → 648 B, `4` → 2 KB, `6` → 10 KB).
@@ -75,10 +75,10 @@ bins the Q-table fits, but the discretization is too coarse to balance the pole 
 
 `#define EXTENDED_BUDGET` selects the training budget:
 
-| | Episodes | Epsilon decay | Log interval |
-| --- | --- | --- | --- |
-| `0` (default) | 10000 | 4000 | 500 |
-| `1` | 50000 | 20000 | 2500 |
+|               | Episodes | Epsilon decay | Log interval |
+| ------------- | -------- | ------------- | ------------ |
+| `0` (default) | 10000    | 4000          | 500          |
+| `1`           | 50000    | 20000         | 2500         |
 
 The extended budget is for checking whether a drop in solved rate at larger `NUM_BINS`
 comes from the fixed episode budget rather than from memory.
@@ -110,11 +110,11 @@ included weights is already there).
 
 **3. Run on the micro-controller** (115200 baud):
 
-| Sketch | Purpose | Boards |
-| --- | --- | --- |
-| `cartpole_dqn_inference` | greedy evaluation of the PC-trained network; prints mean return, solved rate, inference latency | all (weights live in flash) |
-| `cartpole_dqn_demo` | streams every step for `tools/rl_serial_visualizer.py` | all |
-| `cartpole_dqn_train` | full DQN training (replay buffer, target network, Adam, backprop) on the board; prints memory, timing, numerical-stability report and the trained weights as a C header | ESP32, STM32F4 (needs ~130 KB RAM; Uno and ESP8266 stop at compile time on purpose) |
+| Sketch                   | Purpose                                                                                                                                                                 | Boards                                                                              |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `cartpole_dqn_inference` | greedy evaluation of the PC-trained network; prints mean return, solved rate, inference latency                                                                         | all (weights live in flash)                                                         |
+| `cartpole_dqn_demo`      | streams every step for `tools/rl_serial_visualizer.py`                                                                                                                  | all                                                                                 |
+| `cartpole_dqn_train`     | full DQN training (replay buffer, target network, Adam, backprop) on the board; prints memory, timing, numerical-stability report and the trained weights as a C header | ESP32, STM32F4 (needs ~130 KB RAM; Uno and ESP8266 stop at compile time on purpose) |
 
 Its replay buffer holds 2750 transitions (PC: 20000) because the buffer is the largest RAM consumer.
 
@@ -124,9 +124,9 @@ evaluation only reached about 122, so the best checkpoint is selected instead.
 
 ## Reference result (tabular, PC, 6 bins, fixed seeds)
 
-| Policy | Mean return | Solved rate (200 steps) |
-| --- | --- | --- |
-| Random | 23.44 | 0.00% |
-| Trained Tabular Q | 193.33 | 81.00% |
+| Policy            | Mean return | Solved rate (200 steps) |
+| ----------------- | ----------- | ----------------------- |
+| Random            | 23.44       | 0.00%                   |
+| Trained Tabular Q | 193.33      | 81.00%                  |
 
 Cart-Pole results vary noticeably between runs (seeds); treat single runs with care.

@@ -11,13 +11,13 @@ See [DQN](#dqn) for the neural-network variant.
 
 ## Problem
 
-| | |
-| --- | --- |
-| **Grid** | N × N, start at (0, 0), goal at (N-1, N-1), no obstacles |
-| **State** | `row * N + col` (N² states) |
-| **Actions** | 0 = Up, 1 = Down, 2 = Left, 3 = Right |
-| **Reward** | −1 per step, extra −2 for hitting a wall (agent stays in place), +50 at the goal |
-| **Episode** | up to `max(50, 6N)` steps |
+|             |                                                                                  |
+| ----------- | -------------------------------------------------------------------------------- |
+| **Grid**    | N × N, start at (0, 0), goal at (N-1, N-1), no obstacles                         |
+| **State**   | `row * N + col` (N² states)                                                      |
+| **Actions** | 0 = Up, 1 = Down, 2 = Left, 3 = Right                                            |
+| **Reward**  | −1 per step, extra −2 for hitting a wall (agent stays in place), +50 at the goal |
+| **Episode** | up to `max(50, 6N)` steps                                                        |
 
 The Q-table holds N² × 4 floats, i.e. **16 · N² bytes**.
 
@@ -74,10 +74,10 @@ be uploaded to collect timing and return metrics.
 
 `#define EXTENDED_BUDGET` selects the training budget:
 
-| | Episodes | Epsilon decay | Log interval |
-| --- | --- | --- | --- |
-| `0` (default) | 2000 | 800 | 50 |
-| `1` | 30000 | 12000 | 1000 |
+|               | Episodes | Epsilon decay | Log interval |
+| ------------- | -------- | ------------- | ------------ |
+| `0` (default) | 2000     | 800           | 50           |
+| `1`           | 30000    | 12000         | 1000         |
 
 The extended budget is for checking whether a failure on a large grid comes from the
 fixed episode budget rather than from memory.
@@ -110,11 +110,11 @@ is already included).
 
 **3. Run on the micro-controller** (115200 baud; set `GRID_N` to match the weights):
 
-| Sketch | Purpose | Boards |
-| --- | --- | --- |
-| `grid_dqn_inference` | greedy evaluation of the PC-trained network; prints mean return, steps, goal-reach rate, inference latency | all (weights live in flash) |
-| `grid_dqn_demo` | streams every step for `tools/rl_serial_visualizer.py` | all |
-| `grid_dqn_train` | full DQN training (replay buffer, target network, Adam, backprop) on the board; prints memory, timing, numerical-stability report and the trained weights as a C header | ESP32, STM32F4 (needs ~130 KB RAM; Uno and ESP8266 stop at compile time on purpose) |
+| Sketch               | Purpose                                                                                                                                                                 | Boards                                                                              |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `grid_dqn_inference` | greedy evaluation of the PC-trained network; prints mean return, steps, goal-reach rate, inference latency                                                              | all (weights live in flash)                                                         |
+| `grid_dqn_demo`      | streams every step for `tools/rl_serial_visualizer.py`                                                                                                                  | all                                                                                 |
+| `grid_dqn_train`     | full DQN training (replay buffer, target network, Adam, backprop) on the board; prints memory, timing, numerical-stability report and the trained weights as a C header | ESP32, STM32F4 (needs ~130 KB RAM; Uno and ESP8266 stop at compile time on purpose) |
 
 `grid_dqn_train` has the same `GRID_PRESET` switch as the PC script. Its replay buffer holds
 5000 transitions (PC: 20000) because the buffer is the largest RAM consumer.
@@ -129,9 +129,9 @@ is already included).
 
 ## Reference result (tabular, PC, 6 × 6, fixed seeds)
 
-| Policy | Mean return | Mean steps | Goal-reach rate |
-| --- | --- | --- | --- |
-| Random | -52.83 | 45.6 | 21.00% |
-| Trained Tabular Q | 41.00 | 10.0 | 100.00% |
+| Policy            | Mean return | Mean steps | Goal-reach rate |
+| ----------------- | ----------- | ---------- | --------------- |
+| Random            | -52.83      | 45.6       | 21.00%          |
+| Trained Tabular Q | 41.00       | 10.0       | 100.00%         |
 
 The optimal return for 6 × 6 is 41.0.
