@@ -5,12 +5,12 @@ The header holds one weight matrix and one bias vector per Linear layer as
 flat float arrays (PyTorch layout: W is [out_dim, in_dim], row-major), marked
 PROGMEM_ATTR so the sketches can keep them in flash.
 
-Usage:
-    python export_weights_to_c.py <weights.pt> <output.h> <name_prefix>
+Usage (from the repository root):
+    python tools/export_weights_to_c.py <weights.pt> <output.h> <name_prefix>
 
 Examples:
-    python export_weights_to_c.py cartpole/pc/weights/cartpole_dqn.pt cartpole_dqn_weights.h cartpole
-    python export_weights_to_c.py grid/pc/weights/grid_dqn_n30.pt grid_dqn_weights.h grid
+    python tools/export_weights_to_c.py src/cartpole/pc/weights/cartpole_dqn.pt cartpole_dqn_weights.h cartpole
+    python tools/export_weights_to_c.py src/grid/pc/weights/grid_dqn_n30.pt grid_dqn_weights.h grid
 
 Copy the generated header into the sketch folder (inference and demo sketches
 each need their own copy).
