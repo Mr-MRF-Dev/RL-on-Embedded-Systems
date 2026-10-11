@@ -5,12 +5,12 @@ Q-table grows with the number of bins per dimension (curse of dimensionality).
 Two implementations of the same problem:
 
 - `pc/` – Python reference: environment + training + comparison with a random policy.
-- `arduino/` – the same physics and learning loop running **entirely on a microcontroller**.
+- `arduino/` – the same physics and learning loop running **entirely on a micro-controller**.
 
 ## Problem
 
 | | |
-|---|---|
+| --- | --- |
 | **Physics** | standard CartPole-v1 (Barto, Sutton & Anderson) |
 | **State** | 4-D continuous: cart position, cart velocity, pole angle, pole angular velocity |
 | **Discretization** | `NUM_BINS` uniform bins per dimension → `NUM_BINS⁴` states |
@@ -23,7 +23,7 @@ The Q-table holds `NUM_BINS⁴ × 2` floats, i.e. **8 · NUM_BINS⁴ bytes**
 
 ## Structure
 
-```
+```txt
 cartpole/
 ├── README.md
 ├── pc/
@@ -46,7 +46,7 @@ cd pc
 python train_qlearning.py
 ```
 
-**Microcontroller:**
+**MicroController:**
 
 1. Open `arduino/cartpole_qlearning/cartpole_qlearning.ino` in the Arduino IDE.
 2. Set `NUM_BINS` (default 6; an Arduino Uno only fits very small values such as 3).
@@ -69,7 +69,7 @@ bins the Q-table fits, but the discretization is too coarse to balance the pole 
 `#define EXTENDED_BUDGET` selects the training budget:
 
 | | Episodes | Epsilon decay | Log interval |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `0` (default) | 10000 | 4000 | 500 |
 | `1` | 50000 | 20000 | 2500 |
 
@@ -79,7 +79,7 @@ comes from the fixed episode budget rather than from memory.
 ## Reference result (PC, 6 bins, fixed seeds)
 
 | Policy | Mean return | Solved rate (200 steps) |
-|---|---|---|
+| --- | --- | --- |
 | Random | 23.44 | 0.00% |
 | Trained Tabular Q | 193.33 | 81.00% |
 

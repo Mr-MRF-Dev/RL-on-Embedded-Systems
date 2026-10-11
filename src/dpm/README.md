@@ -4,7 +4,7 @@ Tabular Q-Learning for a battery-powered device that chooses a power mode at eve
 Two implementations of the same problem:
 
 - `pc/` – Python reference: environment + training + baseline comparison.
-- `arduino/` – the same environment and learning loop running **entirely on a microcontroller**.
+- `arduino/` – the same environment and learning loop running **entirely on a micro-controller**.
 
 ## Problem
 

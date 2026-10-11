@@ -4,7 +4,7 @@ Tabular Q-Learning on an N × N grid, used to study how the Q-table's memory
 requirement scales with problem size. Two implementations of the same problem:
 
 - `pc/` – Python reference: environment + training + comparison with a random policy.
-- `arduino/` – the same environment and learning loop running **entirely on a microcontroller**.
+- `arduino/` – the same environment and learning loop running **entirely on a micro-controller**.
 
 ## Problem
 
@@ -43,7 +43,7 @@ cd pc
 python train_qlearning.py
 ```
 
-**Microcontroller:**
+**MicroController:**
 
 1. Open `arduino/grid_qlearning/grid_qlearning.ino` in the Arduino IDE.
 2. Set `GRID_N` (default 6).
