@@ -1,3 +1,10 @@
 {
-  "cSpell.words": ["backprop", "cartpole", "numpy", "qlearning"]
+  "cSpell.words": [
+    "backprop",
+    "cartpole",
+    "numpy",
+    "pyserial",
+    "qlearning",
+    "tkinter"
+  ]
 }
