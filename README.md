@@ -3,11 +3,10 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/Mr-MRF-Dev/RL-on-Embedded-Systems)
 [![GitHub License](https://img.shields.io/github/license/Mr-MRF-Dev/RL-on-Embedded-Systems)](/LICENSE)
 
-🎓 My Bachelor's final project at Isfahan University of Technology (IUT).
-
 ![hero](images/image.png)
 
 🏫 Implementation and evaluation of Reinforcement Learning algorithms on embedded systems, focusing on performance, resource constraints, and real-time interaction.
+My Bachelor's final project at Isfahan University of Technology (IUT).
 
 ## 📌 Overview
 
