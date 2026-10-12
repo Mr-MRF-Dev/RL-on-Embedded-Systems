@@ -110,14 +110,14 @@ is already included).
 
 **3. Run on the micro-controller** (115200 baud; set `GRID_N` to match the weights):
 
-| Sketch               | Purpose                                                                                                                                                                 | Boards                                                                              |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `grid_dqn_inference` | greedy evaluation of the PC-trained network; prints mean return, steps, goal-reach rate, inference latency                                                              | all (weights live in flash)                                                         |
-| `grid_dqn_demo`      | streams every step for `tools/rl_serial_visualizer.py`                                                                                                                  | all                                                                                 |
-| `grid_dqn_train`     | full DQN training (replay buffer, target network, Adam, backprop) on the board; prints memory, timing, numerical-stability report and the trained weights as a C header | ESP32, STM32F4 (needs ~130 KB RAM; Uno and ESP8266 stop at compile time on purpose) |
+| Sketch               | Purpose                                                                                                                                                                 | Boards                                                                                                     |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `grid_dqn_inference` | greedy evaluation of the PC-trained network; prints mean return, steps, goal-reach rate, inference latency                                                              | all (weights live in flash)                                                                                |
+| `grid_dqn_demo`      | streams every step for `tools/rl_serial_visualizer.py`                                                                                                                  | all                                                                                                        |
+| `grid_dqn_train`     | full DQN training (replay buffer, target network, Adam, backprop) on the board; prints memory, timing, numerical-stability report and the trained weights as a C header | STM32F4 (tested on STM32F407-Discovery; needs ~80 KB RAM, Uno and ESP8266 stop at compile time on purpose) |
 
 `grid_dqn_train` has the same `GRID_PRESET` switch as the PC script. Its replay buffer holds
-5000 transitions (PC: 20000) because the buffer is the largest RAM consumer.
+3000 transitions (PC: 20000) because the buffer is the largest RAM consumer; the measured ceiling on the STM32F407 is 4750, independent of `GRID_N`.
 
 ### Findings
 

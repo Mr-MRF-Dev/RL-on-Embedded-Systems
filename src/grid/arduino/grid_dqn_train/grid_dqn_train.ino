@@ -17,9 +17,11 @@
   Presets (set GRID_PRESET): 1 = GRID_N 10 / 3000 episodes, 2 = GRID_N 30 / 30000 episodes.
 
   Deviations from the PC script
-    - REPLAY_CAPACITY is 5000 here (20000 on the PC): the replay buffer is the
-      largest RAM consumer (24 bytes per transition). Raise it to find the
-      board's ceiling; the sketch prints free RAM before and after allocation.
+    - REPLAY_CAPACITY is 3000 here (20000 on the PC): the replay buffer is the
+      largest RAM consumer (24 bytes per transition). Measured ceiling on the
+      STM32F407-Discovery: 4750, independent of GRID_N (5000 fails at link time).
+      Raise it to find the ceiling of another board; the sketch prints free RAM
+      before and after training.
     - No PyTorch: nn.Linear's default initialisation and Adam's update rule
       are re-implemented by hand.
 
@@ -40,7 +42,7 @@
 #include <string.h>
 
 #if (defined(__AVR__) || defined(ESP8266)) && !defined(FORCE_SMALL_BOARD_ATTEMPT)
-  #error "On-device DQN training needs ~130 KB of SRAM; Arduino Uno and ESP8266 cannot host it. Use grid_dqn_inference.ino on these boards."
+  #error "On-device DQN training needs ~80 KB of SRAM; Arduino Uno and ESP8266 cannot host it. Use grid_dqn_inference.ino on these boards."
 #endif
 
 // ---------------------- Board helpers ----------------------
@@ -107,7 +109,7 @@ const float    GAMMA      = 0.95f;
 const float    LR         = 1e-3f;
 const uint16_t BATCH_SIZE = 64;
 
-const uint16_t REPLAY_CAPACITY           = 5000;   // PC: 20000
+const uint16_t REPLAY_CAPACITY           = 3000;   // PC: 20000; STM32F407 ceiling: 4750
 const uint16_t MIN_REPLAY_BEFORE_TRAIN   = 1000;
 const uint32_t TARGET_UPDATE_EVERY_STEPS = 500;
 
