@@ -8,15 +8,17 @@
   gives the same result as a batched pass for a mean-reduced MSE loss without
   storing per-batch activations.
 
-  Boards: ESP32 and STM32F4 (STM32duino). The sketch needs ~130 KB of static RAM at
-  the default REPLAY_CAPACITY, so Arduino Uno (2 KB) and ESP8266 stop at compile time on purpose; define
+  Boards: tested on STM32F407-Discovery (STM32duino); other boards with ~80 KB of free
+  RAM, e.g. ESP32, should work. At the default REPLAY_CAPACITY the sketch needs ~80 KB of
+  static RAM, so Arduino Uno (2 KB) and ESP8266 stop at compile time on purpose; define
   FORCE_SMALL_BOARD_ATTEMPT to bypass the guard and capture the linker error.
   Serial: 115200 baud.
 
   Deviations from the PC script
-    - REPLAY_CAPACITY is 2750 here (20000 on the PC): the replay buffer is the
-      largest RAM consumer (40 bytes per transition). Raise it to find the
-      board's ceiling; the sketch prints free RAM before and after allocation.
+    - REPLAY_CAPACITY is 1500 here (20000 on the PC): the replay buffer is the
+      largest RAM consumer (40 bytes per transition). Measured ceiling on the
+      STM32F407-Discovery: 2500 (2750 fails at link time). Raise it to find the
+      ceiling of another board; the sketch prints free RAM before and after training.
     - No PyTorch: nn.Linear's default initialisation and Adam's update rule
       are re-implemented by hand.
 
@@ -36,7 +38,7 @@
 #include <string.h>
 
 #if (defined(__AVR__) || defined(ESP8266)) && !defined(FORCE_SMALL_BOARD_ATTEMPT)
-  #error "On-device DQN training needs ~130 KB of SRAM; Arduino Uno and ESP8266 cannot host it. Use cartpole_dqn_inference.ino on these boards."
+  #error "On-device DQN training needs ~80 KB of SRAM; Arduino Uno and ESP8266 cannot host it. Use cartpole_dqn_inference.ino on these boards."
 #endif
 
 // ---------------------- Board helpers ----------------------
@@ -91,7 +93,7 @@ const float    GAMMA      = 0.99f;
 const float    LR         = 1e-3f;
 const uint16_t BATCH_SIZE = 64;
 
-const uint16_t REPLAY_CAPACITY           = 2750;   // PC: 20000
+const uint16_t REPLAY_CAPACITY           = 1500;   // PC: 20000; STM32F407 ceiling: 2500
 const uint16_t MIN_REPLAY_BEFORE_TRAIN   = 1000;
 const uint32_t TARGET_UPDATE_EVERY_STEPS = 500;
 

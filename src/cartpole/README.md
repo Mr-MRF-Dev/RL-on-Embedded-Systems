@@ -110,13 +110,13 @@ included weights is already there).
 
 **3. Run on the micro-controller** (115200 baud):
 
-| Sketch                   | Purpose                                                                                                                                                                 | Boards                                                                              |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `cartpole_dqn_inference` | greedy evaluation of the PC-trained network; prints mean return, solved rate, inference latency                                                                         | all (weights live in flash)                                                         |
-| `cartpole_dqn_demo`      | streams every step for `tools/rl_serial_visualizer.py`                                                                                                                  | all                                                                                 |
-| `cartpole_dqn_train`     | full DQN training (replay buffer, target network, Adam, backprop) on the board; prints memory, timing, numerical-stability report and the trained weights as a C header | ESP32, STM32F4 (needs ~130 KB RAM; Uno and ESP8266 stop at compile time on purpose) |
+| Sketch                   | Purpose                                                                                                                                                                 | Boards                                                                                                     |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `cartpole_dqn_inference` | greedy evaluation of the PC-trained network; prints mean return, solved rate, inference latency                                                                         | all (weights live in flash)                                                                                |
+| `cartpole_dqn_demo`      | streams every step for `tools/rl_serial_visualizer.py`                                                                                                                  | all                                                                                                        |
+| `cartpole_dqn_train`     | full DQN training (replay buffer, target network, Adam, backprop) on the board; prints memory, timing, numerical-stability report and the trained weights as a C header | STM32F4 (tested on STM32F407-Discovery; needs ~80 KB RAM, Uno and ESP8266 stop at compile time on purpose) |
 
-Its replay buffer holds 2750 transitions (PC: 20000) because the buffer is the largest RAM consumer.
+Its replay buffer holds 1500 transitions (PC: 20000) because the buffer is the largest RAM consumer; the measured ceiling on the STM32F407 is 2500.
 
 **Finding:** the last-episode weights are not necessarily the best ones. In the first PC run the
 training log (with 5% random actions) reached the maximum score repeatedly, but the final greedy
