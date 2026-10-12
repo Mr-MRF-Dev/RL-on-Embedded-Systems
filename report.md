@@ -1,6 +1,4 @@
-# 📄 Project Report (Summary)
-
-Short summary of the final project report (original in Persian). Details, tables and plots are in the report; per-problem notes are in the READMEs under `src/`.
+# 📄 Project Report
 
 ## 🎯 Goal
 
