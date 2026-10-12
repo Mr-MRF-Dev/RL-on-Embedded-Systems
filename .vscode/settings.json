@@ -5,6 +5,7 @@
     "numpy",
     "pyserial",
     "qlearning",
-    "tkinter"
+    "tkinter",
+    "venv"
   ]
 }
