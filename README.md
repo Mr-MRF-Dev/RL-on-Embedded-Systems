@@ -1,8 +1,13 @@
 # RL on Embedded Systems
 
-🏫 Implementation and evaluation of Reinforcement Learning algorithms on embedded systems, focusing on performance, resource constraints, and real-time interaction.
+![GitHub repo size](https://img.shields.io/github/repo-size/Mr-MRF-Dev/RL-on-Embedded-Systems)
+[![GitHub License](https://img.shields.io/github/license/Mr-MRF-Dev/RL-on-Embedded-Systems)](/LICENSE)
 
 🎓 My Bachelor's final project at Isfahan University of Technology (IUT).
+
+![hero](images/image.png)
+
+🏫 Implementation and evaluation of Reinforcement Learning algorithms on embedded systems, focusing on performance, resource constraints, and real-time interaction.
 
 ## 📌 Overview
 
@@ -56,3 +61,13 @@ Each problem folder has its own README.
    ```
 
 Pick the board's serial port, click **Connect**, and the animation starts. Pause / Resume / Next Episode buttons control the board. On Linux, tkinter may need `sudo apt install python3-tk`.
+
+## 🤝 Contributing
+
+We welcome any contributions you may have. If you're interested in helping out, fork the repository
+and create an [Issue](https://github.com/Mr-MRF-Dev/RL-on-Embedded-Systems/issues) or
+[PR](https://github.com/Mr-MRF-Dev/RL-on-Embedded-Systems/pulls).
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [LICENSE](/LICENSE) file for details.
