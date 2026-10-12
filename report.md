@@ -33,3 +33,12 @@ How far can reinforcement learning go on embedded hardware? Measured per board: 
 ## 🏁 Conclusion
 
 Autonomous RL, from tabular methods to DQN with back-propagation, runs on small micro-controllers. The real constraint is usually the time and resources needed to learn, so the choice is between learning on the device and deploying weights trained elsewhere.
+
+## 🔭 Future Work
+
+- **Multiple seeds:** repeat every experiment over several independent seeds and report mean and standard deviation, especially for Cart-Pole and the on-board DPM runs, where single runs varied a lot.
+- **PPO:** complete the top of the algorithm ladder and compare it with Tabular Q-Learning and DQN on the same problems and boards.
+- **More boards:** run the tabular and DQN sketches on ESP32 and other boards with different RAM, FPU and clock speed, and compare them with the measured limits of Uno, NodeMCU and STM32F407.
+- **Real hardware problems:** replace the simulated environments with a physical one (e.g. a line-following robot with motors and sensors), and measure real energy use instead of a simulated battery.
+- **Smaller on-device training:** reduce the replay buffer's memory (the main limit on STM32F407) and use fixed-point or int8 arithmetic so training and inference become practical on boards without an FPU such as the Uno.
+- **NPU-capable boards:** evaluate boards with a neural accelerator and compare their latency and energy with the plain C++ implementation.
